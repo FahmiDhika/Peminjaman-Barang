@@ -389,6 +389,10 @@ export const analisisBarang = async (request: Request, response: Response) => {
         const startDate = new Date(start_date)
         const endDate = new Date(end_date)
 
+        if (startDate > endDate) {
+            return response.status(400).json({ message: "Tanggal mulai tidak boleh lebih besar dari tanggal akhir." });
+        }
+
         const frequentlyBorrowedItems = await prisma.peminjaman.groupBy({
             by: ['idBarang'],
             where: {

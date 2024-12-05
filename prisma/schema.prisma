@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum status {
+  TERSEDIA
+  HABIS
+}
+
+enum statusPeminjaman {
+  DIPINJAM
+  DIKEMBALIKAN
+  TERLAMBAT
+}
+
+enum role {
+  ADMIN
+  USER
+}
+
+model user {
+  idUser        Int       @id @default(autoincrement())
+  uuid          String    @unique @default(uuid())
+  username      String    @default("")
+  password      String    @default("")
+  role          role      @default(ADMIN)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  peminjaman    peminjaman[]
+}
+
+model barang {
+  idBarang      Int       @id @default(autoincrement())
+  uuid          String    @unique @default(uuid())
+  name          String    @default("")
+  category      String  @default("")
+  location      String    @default("")
+  quantity      Int       @default(0)
+  status        status    @default(TERSEDIA)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  peminjaman    peminjaman[]
+}
+
+model peminjaman {
+  id            Int       @id @default(autoincrement())
+  User          user?     @relation(fields: [idUser], references: [idUser])
+  idUser        Int?
+  Barang        barang?   @relation(fields: [idBarang], references: [idBarang])
+  idBarang      Int?
+  jumlahPinjam  Int       @default(0)
+  lokasi_pinjam String    @default("")
+  statusPinjam  statusPeminjaman  @default(DIPINJAM)
+  borrow_date   DateTime  @default(now())
+  return_date   DateTime?
+  actual_return DateTime?
+}

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `barang` ADD COLUMN `stauts` ENUM('TERSEDIA', 'HABIS') NOT NULL DEFAULT 'TERSEDIA';
